@@ -28,11 +28,11 @@
 <script>
 // Read ?img= URL parameter
 const params = new URLSearchParams(window.location.search);
-const imgUrl = params.get("img");
+const rawImgUrl = params.get("img");
 
-// Set image source
-if (imgUrl) {
-  document.getElementById("image").src = imgUrl;
+if (rawImgUrl) {
+  const decodedUrl = decodeURIComponent(rawImgUrl);
+  document.getElementById("image").src = decodedUrl;
 }
 
 // Simple pinch-zoom
@@ -52,7 +52,7 @@ document.addEventListener("touchmove", (e) => {
     scale *= distance / startDistance;
     startDistance = distance;
 
-    scale = Math.max(1, Math.min(scale, 10)); // clamp zoom
+    scale = Math.max(1, Math.min(scale, 10));
 
     document.getElementById("image").style.transform = `scale(${scale})`;
   }
@@ -61,12 +61,6 @@ document.addEventListener("touchmove", (e) => {
 document.addEventListener("touchend", () => {
   startDistance = 0;
 });
-
-const params = new URLSearchParams(window.location.search);
-const img = decodeURIComponent(params.get('img'));
-document.getElementById('viewer').src = img;
-
-
 </script>
 
 </body>
