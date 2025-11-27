@@ -1,25 +1,67 @@
+<!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=10.0">
+<title>Photo Viewer</title>
 <style>
   body, html {
     margin: 0;
     padding: 0;
-    background: black;
     height: 100%;
+    background: black;
+    overflow: hidden;
   }
-  img {
+
+  #image {
     width: 100%;
     height: auto;
+    touch-action: none;
+    transform-origin: center center;
+    transition: transform 0.1s ease-out;
   }
 </style>
 </head>
+
 <body>
-  <img id="photo">
+<img id="image">
+
 <script>
-  const urlParams = new URLSearchParams(window.location.search);
-  const src = urlParams.get("img");
-  if (src) document.getElementById("photo").src = src;
+// Read ?img= URL parameter
+const params = new URLSearchParams(window.location.search);
+const imgUrl = params.get("img");
+
+// Set image source
+if (imgUrl) {
+  document.getElementById("image").src = imgUrl;
+}
+
+// Simple pinch-zoom
+let scale = 1;
+let startDistance = 0;
+
+document.addEventListener("touchmove", (e) => {
+  if (e.touches.length === 2) {
+    e.preventDefault();
+
+    let dx = e.touches[0].clientX - e.touches[1].clientX;
+    let dy = e.touches[0].clientY - e.touches[1].clientY;
+    let distance = Math.sqrt(dx*dx + dy*dy);
+
+    if (startDistance === 0) startDistance = distance;
+
+    scale *= distance / startDistance;
+    startDistance = distance;
+
+    scale = Math.max(1, Math.min(scale, 10)); // clamp zoom
+
+    document.getElementById("image").style.transform = `scale(${scale})`;
+  }
+});
+
+document.addEventListener("touchend", () => {
+  startDistance = 0;
+});
 </script>
+
 </body>
 </html>
