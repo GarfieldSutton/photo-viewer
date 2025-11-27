@@ -61,6 +61,12 @@ document.addEventListener("touchmove", (e) => {
 document.addEventListener("touchend", () => {
   startDistance = 0;
 });
+
+const params = new URLSearchParams(window.location.search);
+const img = decodeURIComponent(params.get('img'));
+document.getElementById('viewer').src = img;
+
+
 </script>
 
 </body>
